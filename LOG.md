@@ -51,4 +51,31 @@ leaves out the parentheses around a group that holds a single number.
 - Validation returns every error at once (not just the first) so the UI can highlight
   them all. "Unused tiles" is checked when the puzzle's tiles are passed in.
 
-**Next.** Scorer (`score.js`) with tests, then the puzzle file and the solver.
+**Next.** Scorer, then the puzzle file and the solver.
+
+## 2026-10-18 — Step 2: scorer
+
+**Planned.** Add `score.js` using the CLAUDE.md formula, with tests for every goal type.
+
+**Changed.**
+- `src/engine/score.js`: `quality(goal, v)` and `score(puzzle, value)`, which returns
+  `{ score, percent, beatBest, matchedBest }`. Both are exported from `index.js`.
+- `tests/score.test.js` (17 tests): each goal type, clamping at both ends, beating best,
+  smallestPositive at ≤ 0, closest from either side of the target, and edge cases.
+  The suite now has 145 tests.
+
+**Broke.** Nothing.
+
+**Decided.**
+- `score()` doesn't log anything. It returns `beatBest`, and the Reveal screen will log
+  the "beat the best known answer" message. That keeps the solver and tests quiet.
+- Values within a relative 1e-9 of best count as matching it, so float noise like
+  `√2 ^ 2 = 2.0000000000000004` doesn't count as beating best.
+- `percent` rounds down (99.6% shows 99), so only a true best shows 100%.
+- If best equals naive, matching it scores 100% and anything worse scores 0%.
+- The target lives in the goal: `"goal": { "type": "closest", "target": 247 }`.
+- Bad puzzle data throws an error: best worse than naive, or a smallestPositive best or
+  naive that isn't positive. The puzzle checker will catch these.
+
+**Next.** `src/puzzles.json` and a puzzle checker that confirms each `best`/`naive` value
+matches its `expr`, then the solver.

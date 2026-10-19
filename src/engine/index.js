@@ -7,6 +7,7 @@ import { evaluate } from './evaluate.js';
 
 export { tokenize, tilesFromString, validate, parse, evaluate };
 export { formatNumber, printExpr } from './format.js';
+export { quality, score } from './score.js';
 export { OPS, FNS, MAX_MAGNITUDE } from './tiles.js';
 
 // Structural check for the Submit button. Pass the puzzle's tiles to also check
