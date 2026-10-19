@@ -1,0 +1,423 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "goal": { "type": "largest" },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 8 },
+      { "kind": "num", "value": 3 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "+" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "4 × 6 × 8 × (1 + 3)", "value": 768, "proven": true },
+    "naive": { "expr": "6 × 3 × 1 × 8 + (4)", "value": 148 },
+    "hint": "Adding to your smallest number grows the product the most."
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "goal": { "type": "closest", "target": 60 },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 9 },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" }, { "kind": "fn", "value": "√" }
+    ],
+    "best": { "expr": "7 × 9 + √2 − 5", "value": 59.41421356237309, "proven": true },
+    "naive": { "expr": "2 × 7 − 5 + √9", "value": 12 },
+    "hint": "7 × 9 gets you close; the √ tile can fine-tune."
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 3 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 8 }, { "kind": "num", "value": 2 },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "2 − 8 × (3 + 6)", "value": -70, "proven": true },
+    "naive": { "expr": "3 × 2 + 8 − (6)", "value": 8 },
+    "hint": "Multiply your biggest number by the biggest group you can build, then subtract it."
+  },
+  {
+    "id": 4,
+    "difficulty": "easy",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 7 }, { "kind": "num", "value": 12 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 3 },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "÷" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "5 − 12 ÷ 7 − (3)", "value": 0.2857142857142856, "proven": true },
+    "naive": { "expr": "5 − 3 ÷ (12 − 7)", "value": 4.4 },
+    "hint": "Subtracting a fraction just under one can land you just above zero."
+  },
+  {
+    "id": 5,
+    "difficulty": "easy",
+    "goal": { "type": "closest", "target": 50 },
+    "tiles": [
+      { "kind": "num", "value": 4 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 10 }, { "kind": "fnslot", "value": "log₂" },
+      { "kind": "num", "value": 16 }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" }
+    ],
+    "best": { "expr": "4 + log₂[10] × 16 − 6", "value": 51.150849518197795, "proven": true },
+    "naive": { "expr": "log₂[10] − 16 + 4 × 6", "value": 11.321928094887362 },
+    "hint": "log₂ 10 is a little over 3. Multiply it by something big."
+  },
+  {
+    "id": 6,
+    "difficulty": "easy",
+    "goal": { "type": "largest" },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 9 },
+      { "kind": "op", "value": "^" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "(2 + 3 × 5) ^ 9", "value": 118587876497, "proven": true },
+    "naive": { "expr": "5 × 2 + 9 ^ (3)", "value": 739 },
+    "hint": "Build the biggest base you can, then raise it to your largest number."
+  },
+  {
+    "id": 7,
+    "difficulty": "easy",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 10 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 2 },
+      { "kind": "num", "value": 1 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "×" }
+    ],
+    "best": { "expr": "1 − 10 × 4 × 9 − 2", "value": -361, "proven": true },
+    "naive": { "expr": "1 × 4 − 10 − 9 × 2", "value": -24 },
+    "hint": "Multiply your three biggest numbers together and subtract the result."
+  },
+  {
+    "id": 8,
+    "difficulty": "easy",
+    "goal": { "type": "closest", "target": 24 },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 6 },
+      { "kind": "op", "value": "÷" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "÷" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "6 ÷ (1 − 3 ÷ 4)", "value": 24, "proven": true },
+    "naive": { "expr": "1 − 4 ÷ (6) ÷ 3", "value": 0.7777777777777778 },
+    "hint": "Dividing by a small fraction makes a number bigger: 6 ÷ ¼ = 24."
+  },
+  {
+    "id": 9,
+    "difficulty": "easy",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 9 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 2 },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "fn", "value": "√" }
+    ],
+    "best": { "expr": "7 × 2 − 4 × √9", "value": 2, "proven": true },
+    "naive": { "expr": "√7 × 9 × 2 − 4", "value": 43.62352359916263 },
+    "hint": "√9 is a whole number. Aim for two products that nearly match."
+  },
+  {
+    "id": 10,
+    "difficulty": "easy",
+    "goal": { "type": "closest", "target": 365 },
+    "tiles": [
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 12 }, { "kind": "num", "value": 30 }, { "kind": "num", "value": 7 },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "12 × 30 + 7 − (5)", "value": 362, "proven": true },
+    "naive": { "expr": "7 × 12 − (30) + 5", "value": 59 },
+    "hint": "12 × 30 is already close to a year."
+  },
+  {
+    "id": 11,
+    "difficulty": "medium",
+    "goal": { "type": "largest" },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 5 },
+      { "kind": "num", "value": 6 }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "^" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "5 ^ (2 × 4 + 3 + 6)", "value": 762939453125, "proven": true },
+    "naive": { "expr": "5 × (6 + 3 ^ 4 + 2)", "value": 445 },
+    "hint": "Put as much as you can into the exponent."
+  },
+  {
+    "id": 12,
+    "difficulty": "medium",
+    "goal": { "type": "closest", "target": 1000 },
+    "tiles": [
+      { "kind": "num", "value": 8 }, { "kind": "num", "value": 25 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 7 },
+      { "kind": "num", "value": 9 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "−" }, { "kind": "fn", "value": "√" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "8 × 7 × (25 + √3 − 9)", "value": 992.9948452238572, "proven": true },
+    "naive": { "expr": "7 − 9 × (3) + √8 × 25", "value": 50.710678118654755 },
+    "hint": "You need something near 18 times something near 56. √3 is about 1.73."
+  },
+  {
+    "id": 13,
+    "difficulty": "medium",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 12 }, { "kind": "num", "value": 3 },
+      { "kind": "num", "value": 7 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "+" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "fn", "value": "∛" }
+    ],
+    "best": { "expr": "∛3 − 5 − 12 × (9 + 7)", "value": -195.5577504296926, "proven": true },
+    "naive": { "expr": "(∛7 × 9) + 5 − 12 − 3", "value": 7.216380644951503 },
+    "hint": "Subtract the biggest product you can make."
+  },
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 13 }, { "kind": "num", "value": 17 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 4 },
+      { "kind": "num", "value": 9 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "+" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "4 × (17 − 13 − 6) + 9", "value": 1, "proven": true },
+    "naive": { "expr": "17 × 4 + 9 − 13 − (6)", "value": 58 },
+    "hint": "Make a small negative group, multiply it, then climb back with one addition."
+  },
+  {
+    "id": 15,
+    "difficulty": "medium",
+    "goal": { "type": "closest", "target": 777 },
+    "tiles": [
+      { "kind": "num", "value": 6 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 8 }, { "kind": "num", "value": 9 },
+      { "kind": "num", "value": 10 }, { "kind": "num", "value": 11 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "+" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "6 + 7 × 10 × 11 + 9 − (8)", "value": 777, "proven": true },
+    "naive": { "expr": "7 × 6 − 8 + 11 + (10 × 9)", "value": 135 },
+    "hint": "7 × 10 × 11 = 770."
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "goal": { "type": "largest" },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 5 },
+      { "kind": "num", "value": 7 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "^" }, { "kind": "fn", "value": "√" }, { "kind": "fn", "value": "∛" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "4 ^ (3 × 7 − √∛2) + 5", "value": 927834093673.449, "proven": true },
+    "naive": { "expr": "7 × √5 − 3 ^ ∛(4) + 2", "value": 11.932650315022792 },
+    "hint": "The exponent is where the power is, but watch the \"too big\" limit: shave a little off it."
+  },
+  {
+    "id": 17,
+    "difficulty": "medium",
+    "goal": { "type": "closest", "target": 2026 },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 5 },
+      { "kind": "num", "value": 8 }, { "kind": "num", "value": 13 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "^" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "(1 + 8 × (13 − 3)) × 5 ^ 2", "value": 2025, "proven": false },
+    "naive": { "expr": "3 + 8 − 2 ^ 1 × 13 × ((5))", "value": -119 },
+    "hint": "5 ^ 2 = 25, and 81 × 25 is close to 2026."
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 4 }, { "kind": "num", "value": 8 }, { "kind": "num", "value": 15 }, { "kind": "num", "value": 16 },
+      { "kind": "num", "value": 23 }, { "kind": "num", "value": 42 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "(23 + 8) × 42 × (4 − 16 − 15)", "value": -35154, "proven": false },
+    "naive": { "expr": "8 × 15 − 23 − (4 × (16) + 42)", "value": -9 },
+    "hint": "Build one big positive product and one negative group, then multiply them."
+  },
+  {
+    "id": 19,
+    "difficulty": "medium",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 7 },
+      { "kind": "num", "value": 11 }, { "kind": "num", "value": 16 }, { "kind": "fnslot", "value": "log₂" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" },
+      { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "3 − 16 − 11 + 5 × (2 + log₂[7])", "value": 0.036774610288020426, "proven": false },
+    "naive": { "expr": "7 × 5 − 2 − 16 + log₂[3] + (11)", "value": 29.584962500721154 },
+    "hint": "log₂ 7 is a bit under 3. Balance it against a subtraction."
+  },
+  {
+    "id": 20,
+    "difficulty": "medium",
+    "goal": { "type": "closest", "target": 500 },
+    "tiles": [
+      { "kind": "num", "value": 9 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 9 },
+      { "kind": "num", "value": 9 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 9 }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "÷" },
+      { "kind": "op", "value": "−" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "fn", "value": "√" },
+      { "kind": "fn", "value": "√" }
+    ],
+    "best": { "expr": "(9 + 9 + 9 × 9 ÷ √√9 − 9) × 9", "value": 501.8883462392372, "proven": false },
+    "naive": { "expr": "(√9) × 9 − 9 + √9 + 9 × 9 ÷ 9", "value": 30 },
+    "hint": "√√9 is about 1.73; dividing by it gets you values between whole numbers."
+  },
+  {
+    "id": 21,
+    "difficulty": "hard",
+    "goal": { "type": "largest" },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 4 },
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 8 },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "−" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "8 × (5 + 2 + 3) × (4 + 6) × 7 − 1", "value": 5599, "proven": false },
+    "naive": { "expr": "5 − 7 × 1 + 8 + 2 × (6 × 4 + (3))", "value": 60 },
+    "hint": "With no power tile, products of sums win. Then subtract as little as you can."
+  },
+  {
+    "id": 22,
+    "difficulty": "hard",
+    "goal": { "type": "closest", "target": 31415 },
+    "tiles": [
+      { "kind": "num", "value": 3 }, { "kind": "num", "value": 1 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 1 },
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 2 }, { "kind": "num", "value": 6 },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "^" }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "÷" }, { "kind": "op", "value": "×" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "2 ÷ 1 × (5 ^ 6 + 3 × (4 − 1) × 9)", "value": 31412, "proven": false },
+    "naive": { "expr": "6 ÷ 5 ^ 4 + 9 − 2 × (3) × (1 × 1)", "value": 3.0096000000000007 },
+    "hint": "5 ^ 6 = 15625, about half the target."
+  },
+  {
+    "id": 23,
+    "difficulty": "hard",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 12 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 9 }, { "kind": "num", "value": 30 },
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 8 }, { "kind": "num", "value": 4 }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "+" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "fn", "value": "∛" }
+    ],
+    "best": { "expr": "(∛4 − 9 − 12) × (8 + 5 + 7) × 30", "value": -11647.55936881908, "proven": false },
+    "naive": { "expr": "8 + 12 × 7 + ∛(30) × (4 − 9) − 5", "value": 71.46383747023071 },
+    "hint": "Multiply a negative group by a big positive group."
+  },
+  {
+    "id": 24,
+    "difficulty": "hard",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 100 }, { "kind": "num", "value": 75 }, { "kind": "num", "value": 50 }, { "kind": "num", "value": 25 },
+      { "kind": "num", "value": 6 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 8 }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "+" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "6 × 25 − 100 − (75) + 50 − (3) × 8", "value": 1, "proven": false },
+    "naive": { "expr": "((6) − 8 + 75 × 50) − 25 × 3 − 100", "value": 3573 },
+    "hint": "Aim for two halves that differ by exactly one."
+  },
+  {
+    "id": 25,
+    "difficulty": "hard",
+    "goal": { "type": "closest", "target": 999 },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 8 }, { "kind": "num", "value": 16 },
+      { "kind": "num", "value": 32 }, { "kind": "num", "value": 64 }, { "kind": "num", "value": 128 }, { "kind": "num", "value": 256 },
+      { "kind": "fnslot", "value": "log₂" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "÷" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" },
+      { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" },
+      { "kind": "fn", "value": "log₂" }, { "kind": "fn", "value": "log₂" }
+    ],
+    "best": { "expr": "256 + log₂ 2 × log₂ 8 + 16 ÷ 4 − ((32) − 128 × log₂[64])", "value": 999, "proven": false },
+    "naive": { "expr": "8 × log₂ 2 × 256 ÷ (128 + 32) + (log₂ 16 − 64 − log₂[4])", "value": -49.2 },
+    "hint": "log₂ turns powers of two into small whole numbers: log₂ 64 = 6."
+  },
+  {
+    "id": 26,
+    "difficulty": "hard",
+    "goal": { "type": "closest", "target": 10000 },
+    "tiles": [
+      { "kind": "num", "value": 2 }, { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 3 },
+      { "kind": "num", "value": 4 }, { "kind": "num", "value": 4 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 5 },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "^" }, { "kind": "op", "value": "^" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "fn", "value": "√" }
+    ],
+    "best": { "expr": "5 ^ 4 × 2 ^ √(5 − 3 + 2 + 3 × (4))", "value": 10000, "proven": false },
+    "naive": { "expr": "√4 + 2 ^ (2 − 4) ^ 3 × (3 × 5) + 5", "value": 7.05859375 },
+    "hint": "5⁴ × 2⁴ = 10,000. Can you make an exponent of 4 with √?"
+  },
+  {
+    "id": 27,
+    "difficulty": "hard",
+    "goal": { "type": "closest", "target": 12345 },
+    "tiles": [
+      { "kind": "num", "value": 10 }, { "kind": "num", "value": 20 }, { "kind": "num", "value": 30 }, { "kind": "num", "value": 40 },
+      { "kind": "num", "value": 50 }, { "kind": "num", "value": 60 }, { "kind": "num", "value": 70 }, { "kind": "num", "value": 80 },
+      { "kind": "num", "value": 90 }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "÷" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }
+    ],
+    "best": { "expr": "80 × 90 − 10 + 60 × (70 − 30 ÷ (40)) + (20 × 50)", "value": 12345, "proven": false },
+    "naive": { "expr": "50 × 90 ÷ (20) + (80 + 40) − 60 − 10 × 70 × (30)", "value": -20715 },
+    "hint": "80 × 90 is 7,200. Build the rest from there."
+  },
+  {
+    "id": 28,
+    "difficulty": "hard",
+    "goal": { "type": "smallest" },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 5 }, { "kind": "num", "value": 7 },
+      { "kind": "num", "value": 9 }, { "kind": "num", "value": 11 }, { "kind": "num", "value": 13 }, { "kind": "num", "value": 15 },
+      { "kind": "num", "value": 17 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "÷" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "fn", "value": "∛" }
+    ],
+    "best": { "expr": "1 − (9 + 13 + 11) ÷ (5 − 3 − ∛7) × 17 × 15", "value": -96646.68935590268, "proven": false },
+    "naive": { "expr": "(9 × 3) − 1 + (7 + 11 − 15 × ∛5) ÷ 13 − 17", "value": 8.411566215373043 },
+    "hint": "Dividing by a number close to zero makes a huge result, and ∛7 is just under 2."
+  },
+  {
+    "id": 29,
+    "difficulty": "hard",
+    "goal": { "type": "smallestPositive" },
+    "tiles": [
+      { "kind": "num", "value": 11 }, { "kind": "num", "value": 22 }, { "kind": "num", "value": 33 }, { "kind": "num", "value": 44 },
+      { "kind": "num", "value": 55 }, { "kind": "num", "value": 66 }, { "kind": "num", "value": 77 }, { "kind": "num", "value": 88 },
+      { "kind": "num", "value": 99 }, { "kind": "num", "value": 1000 }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "−" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "×" }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "lparen" },
+      { "kind": "rparen" }
+    ],
+    "best": { "expr": "22 × (44 × 11 − 88) − 55 − 1000 + 33 − (99 × (77) + 66)", "value": 1, "proven": false },
+    "naive": { "expr": "33 + 99 − 11 − 55 × 22 + 66 × 44 × 77 − 1000 − (((88)))", "value": 221431 },
+    "hint": "Every number except 1000 is a multiple of 11. Use that."
+  },
+  {
+    "id": 30,
+    "difficulty": "hard",
+    "goal": { "type": "closest", "target": 2718 },
+    "tiles": [
+      { "kind": "num", "value": 1 }, { "kind": "num", "value": 2 }, { "kind": "num", "value": 3 }, { "kind": "num", "value": 4 },
+      { "kind": "num", "value": 5 }, { "kind": "num", "value": 6 }, { "kind": "num", "value": 7 }, { "kind": "num", "value": 8 },
+      { "kind": "num", "value": 9 }, { "kind": "num", "value": 10 }, { "kind": "op", "value": "+" }, { "kind": "op", "value": "+" },
+      { "kind": "op", "value": "+" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" }, { "kind": "op", "value": "×" },
+      { "kind": "op", "value": "−" }, { "kind": "op", "value": "÷" }, { "kind": "op", "value": "^" }, { "kind": "lparen" },
+      { "kind": "rparen" }, { "kind": "lparen" }, { "kind": "rparen" }, { "kind": "fn", "value": "√" },
+      { "kind": "fn", "value": "log₁₀" }
+    ],
+    "best": { "expr": "6 + 7 + 9 ÷ 2 × (5 ^ 4 − 3 × 8) + 1 × log₁₀ √(10)", "value": 2718, "proven": false },
+    "naive": { "expr": "10 ÷ 7 ^ 4 + 8 + √(6 + 1 × (3) − 9) × log₁₀ 5 × 2", "value": 8.004164931278634 },
+    "hint": "log₁₀ √10 = ½, a handy half."
+  }
+]

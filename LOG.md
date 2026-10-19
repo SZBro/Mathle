@@ -159,3 +159,17 @@ errors the marker runs unbroken under the whole sub-expression. The expression n
 quotes on the command line so the shell doesn't expand `*`.
 
 `src/puzzles.json` is still uncommitted, waiting for review.
+
+## 2026-10-18 — Step 5: puzzle file committed
+
+**Planned.** Commit `src/puzzles.json` after review.
+
+**Changed.** Committed the 30 puzzles: 10 easy, 10 medium, 10 hard. Goals: 13 closest,
+6 smallest, 6 smallestPositive, 5 largest. 16 bests are proven by exhaustive search
+(all puzzles of 13 tiles or fewer); the other 14 are best known from the heuristic
+search. `npm run check-puzzles` reports 0 errors and 0 warnings, and all 178 tests pass.
+
+**Broke.** Nothing.
+
+**Decided.** The file was reviewed and accepted as written. The committed tree now has
+everything the puzzle tests need.
