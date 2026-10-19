@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check-puzzles": "node tools/check-puzzles.js",
-    "solve": "node tools/solve.js"
+    "solve": "node tools/solve.js",
+    "calc": "node tools/calc.js"
   },
   "devDependencies": {
     "vite": "^8.3.4",

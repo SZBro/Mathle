@@ -137,3 +137,25 @@ stored answer through the engine, and write the offline solver from CLAUDE.md.
   committing"). The puzzle tests need it, so commit it after review.
 
 **Next.** UI: Play screen with tile tray, answer row (SortableJS), validation messages.
+
+## 2026-10-18 — Step 4: command-line calculator
+
+**Planned.** `tools/calc.js` around `runString`, for checking expressions by hand:
+`npm run calc -- "2 + 3 * 4"`.
+
+**Changed.**
+- `tools/calc.js`: prints the expression in tile notation, then one line per step
+  (`3 × 4 = 12   → 2 + 12`), then the result, with full precision when the display is
+  rounded. On an error it prints the message and the expression one tile per segment,
+  with `^` under the tile that caused it and `~` under the rest of the sub-expression.
+  Exits 1 on any error. Accepts `* / - sqrt cbrt log2 log10` and `sqrt[9]` for slots;
+  these aliases already worked in `tilesFromString`.
+- `npm run calc` script; `tests/calc.test.js` (7 tests). The suite now has 178 tests.
+
+**Broke.** Nothing.
+
+**Decided.** For validation errors only the named tiles are marked (`^ ^`); for math
+errors the marker runs unbroken under the whole sub-expression. The expression needs
+quotes on the command line so the shell doesn't expand `*`.
+
+`src/puzzles.json` is still uncommitted, waiting for review.
