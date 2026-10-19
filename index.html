@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="A daily one-shot math puzzle." />
+    <title>Mathle</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <h1>Mathle</h1>
+        <div class="meta"><span id="puzzle-no"></span> · <span id="puzzle-date"></span></div>
+        <button type="button" class="icon-btn" id="rules-open" aria-label="How to play">?</button>
+      </header>
+      <main id="app"></main>
+    </div>
+
+    <dialog id="rules" aria-labelledby="rules-title">
+      <form method="dialog">
+        <h2 id="rules-title">How to play</h2>
+        <ul>
+          <li>Arrange <strong>all</strong> the tiles into one expression that meets today's goal.</li>
+          <li>Drag tiles into the box, or tap a tile to place it. Tap a placed tile to send it back.</li>
+          <li>No values are shown while you build. Work it out in your head or in the scratch box.</li>
+          <li>You get <strong>one submit</strong>. Then you'll see the steps, the best known answer and your score.</li>
+          <li>Order: parentheses, then functions (√ ∛ log), then <code>^</code>, then × ÷, then + −.
+            A function applies only to the next number or <code>( … )</code> group: √9 ^ 2 = 9.</li>
+          <li><code>−</code> always subtracts; it's never a negative sign.</li>
+        </ul>
+        <button class="submit" value="close">Got it</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

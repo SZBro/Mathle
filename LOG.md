@@ -173,3 +173,52 @@ search. `npm run check-puzzles` reports 0 errors and 0 warnings, and all 178 tes
 
 **Decided.** The file was reviewed and accepted as written. The committed tree now has
 everything the puzzle tests need.
+
+## 2026-10-18 — Step 6: Play screen
+
+**Planned.** The Play screen from CLAUDE.md: header, goal card, answer row with SortableJS
+snapping plus tap-to-place, inline validation from the engine that highlights the bad
+tiles, a notes box, and Submit (it only logs the expression for now; Reveal is next).
+I described the layout and style first and got an OK: one column (max 560px), a light
+"paper" look with an indigo accent and automatic dark mode, and tiles colour-coded by
+kind (numbers neutral, operators blue, parentheses grey, functions purple).
+
+**Changed.**
+- Added **SortableJS** (dependency, on the approved list).
+- `index.html`: header (Mathle, puzzle #, date, `?` rules dialog) and `#app`.
+- `src/main.js`: picks today's puzzle, shuffles the tray, wires notes and Submit.
+  Dev overrides: `?date=YYYY-MM-DD` and `?puzzle=<id>`.
+- `src/daily.js`: `LAUNCH_DATE = 2026-10-18`, `dateKey`, `daysSinceLaunch` (UTC
+  midnights, so DST never shifts it), `puzzleIndex` (wraps), and a seeded shuffle
+  (FNV-1a hash + mulberry32).
+- `src/storage.js`: `mathle:v1` load/save with every access in try/catch; notes per day.
+- `src/ui/tiles.js`: tile elements (`data-id`, `data-kind`); function tiles get a `?`
+  badge; slot tiles contain a `.slot-zone`.
+- `src/ui/play.js`: the screen. The DOM is the source of truth; after every move the
+  answer row is read back into an arrangement and run through `check()`.
+- `src/style.css`; `tests/daily.test.js` (7 tests). The suite now has 185 tests.
+- `.claude/launch.json` for the dev server (port 5173).
+
+**Broke.** Nothing in the code. The browser tool's one-step drag doesn't trigger
+SortableJS's fallback drag, so I checked dragging with stepped pointer events in the
+page: reordering, pulling a number out of a slot, and a slot refusing an operator all work.
+
+**Decided.**
+- Sortable runs in fallback mode (`forceFallback`) so mouse and touch behave the same.
+  On touch a 120 ms hold starts a drag, so a quick swipe still scrolls the page.
+- Tap a tray tile to append it to the answer row; a number tapped right after an empty
+  slot goes into the slot. Tap a placed tile to send it back to its original tray spot
+  (a slot keeps its number). "Clear" returns everything.
+- A slot zone accepts only one number tile. A slot can be filled while it's still in
+  the tray.
+- While tiles remain in the tray, "not finished yet" errors are hidden (operator at the
+  end, unclosed `(`, function or empty slot at the end, empty slot) so building left to
+  right doesn't flash red. Every other error shows at once, with all its tiles outlined
+  in red; newly bad tiles shake once.
+- The header number is the day number (days since launch + 1), not the puzzle id, since
+  puzzles repeat after 30 days.
+- The tray shuffle is seeded by date + puzzle id, so a reload keeps the same order.
+- The in-progress arrangement isn't saved across reloads (not in the spec); notes are.
+
+**Next.** Reveal screen: evaluate on submit (math errors don't use up the shot), show
+the steps, best answer, score and countdown, and lock the day.
