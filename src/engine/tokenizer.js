@@ -7,7 +7,7 @@
 // Each token keeps the id of the tile it came from so errors and steps can point back
 // at tiles.
 
-import { canonicalOp, canonicalFn, FN_ALIASES, FNS, OP_ALIASES, OPS } from './tiles.js';
+import { canonicalOp, canonicalFn, FN_ALIASES, FNS, isLog, OP_ALIASES, OPS } from './tiles.js';
 
 export function tokenize(arrangement) {
   return arrangement.map(tileToToken);
@@ -102,4 +102,32 @@ export function tilesFromString(src) {
   }
 
   return readList(null);
+}
+
+// The inverse of tilesFromString: "(1 + 3) × 4", "√9 ^ 2", "log₂ 8", "√[9]".
+export function tilesToString(arrangement) {
+  let out = '';
+  let prev = null;
+  for (const tile of arrangement) {
+    const tight = prev && (
+      prev.kind === 'lparen' || tile.kind === 'rparen' ||
+      (prev.kind === 'fn' && (!isLog(prev.value) || tile.kind === 'lparen'))
+    );
+    if (prev && !tight) out += ' ';
+    out += tileText(tile);
+    prev = tile;
+  }
+  return out;
+}
+
+function tileText(tile) {
+  switch (tile.kind) {
+    case 'num': return String(tile.value);
+    case 'op': return canonicalOp(tile.value);
+    case 'lparen': return '(';
+    case 'rparen': return ')';
+    case 'fn': return canonicalFn(tile.value);
+    case 'fnslot': return `${canonicalFn(tile.value)}[${tilesToString(tile.inner ?? [])}]`;
+    default: throw new Error(`Unknown tile kind: ${tile.kind}`);
+  }
 }

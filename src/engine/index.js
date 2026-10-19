@@ -1,11 +1,11 @@
 // Entry point for the game and tools/solve.js.
 
-import { tokenize, tilesFromString } from './tokenizer.js';
+import { tokenize, tilesFromString, tilesToString } from './tokenizer.js';
 import { validate } from './validate.js';
 import { parse } from './parser.js';
 import { evaluate } from './evaluate.js';
 
-export { tokenize, tilesFromString, validate, parse, evaluate };
+export { tokenize, tilesFromString, tilesToString, validate, parse, evaluate };
 export { formatNumber, printExpr } from './format.js';
 export { quality, score } from './score.js';
 export { OPS, FNS, MAX_MAGNITUDE } from './tiles.js';

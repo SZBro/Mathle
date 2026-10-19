@@ -79,3 +79,61 @@ leaves out the parentheses around a group that holds a single number.
 
 **Next.** `src/puzzles.json` and a puzzle checker that confirms each `best`/`naive` value
 matches its `expr`, then the solver.
+
+## 2026-10-18 — Step 3: puzzle file, checker and solver
+
+**Planned.** Draft 30 puzzles in `src/puzzles.json`, write a checker that runs every
+stored answer through the engine, and write the offline solver from CLAUDE.md.
+
+**Changed.**
+- `tilesToString()` in the tokenizer (the inverse of `tilesFromString`), so the solver can
+  write answers back to the file.
+- `tools/puzzles.js`: load/save `puzzles.json` (one field per line, four tiles per line),
+  tile keys, and the solver's "flat" form, where a slot tile is followed by its number.
+- `tools/check.js` + `tools/check-puzzles.js` (`npm run check-puzzles`). Errors: bad
+  fields, tile count outside 8–25, numbers outside 1–1000, unbalanced paren tiles, wrong
+  operator count, an answer that doesn't use exactly the puzzle's tiles, a malformed
+  answer or math error, a stored value that doesn't match its expression, and best worse
+  than naive. Warnings: best/naive/hint missing.
+- `tools/solver.js` + `tools/solve.js` (`npm run solve -- --write`). Exhaustive search
+  walks only well-formed arrangements (the grammar is built in, so it never tries
+  `7 12` or `+ )`) and never tries two orders of identical tiles. The heuristic search
+  uses random restarts plus swap, move and block-move steps, with a seeded random-number
+  generator so runs repeat exactly. Both evaluate with the game's own engine.
+- `src/puzzles.json`: 30 drafts (10 easy, 10 medium, 10 hard; 8–25 tiles; all four goal
+  types), with best and naive filled in by the solver and hints written from the bests.
+- `tests/tools.test.js` (26 tests): round-tripping, every checker error, solver
+  correctness on known puzzles, repeatability, and a test that the real `puzzles.json`
+  passes the checker. The suite now has 171 tests.
+
+**Broke.**
+- I miscounted operands: a slot plus its number is one operand, so N number tiles always
+  need N − 1 operators. This broke a solver pruning rule and one test puzzle. Fixed, and
+  the checker now reports a wrong operator count.
+- Draft #20 had one operator too many; the new check caught it.
+- First solver run showed several bad drafts: closest targets out of reach (#2, #17, #22),
+  smallestPositive puzzles with `÷` that just divide down toward 0 (down to 4.7e-9:
+  #14, #19, #24, #29), and largest puzzles stuck at the 1e12 cap where best can't be
+  beaten (#21 at exactly 1e12, #26). I redesigned them: new target for #2, a `^` for
+  #17/#22, no `÷` in those smallestPositive puzzles, no `^` in #21, and #26 became
+  closest 10000.
+
+**Decided.**
+- Exhaustive search goes up to **13 tiles** (CLAUDE.md said about 10): 13 tiles takes
+  about 4 s. Bigger puzzles use 2M heuristic steps (about 2–3 s each) and are marked
+  `"proven": false`, i.e. best known.
+- A second pass with another seed and 3× the steps matched every heuristic best except
+  #28, where it did worse (the first result was kept). So the heuristic bests look
+  stable, but they aren't proven.
+- `best` gets a `"proven"` field (true for exhaustive).
+- **naive = the median result of 501 random well-formed arrangements**, i.e. what
+  placing tiles without a plan gets you. A random placement scores about 0%. (For
+  smallestPositive the median is taken over positive results only.)
+- `solve --write` replaces `best` only if it finds a better one, and fills `naive` only
+  if it's missing.
+- Largest puzzles with `^` (#6, #11, #16) end up chasing the 1e12 limit. I left these
+  as they are, since "too big" acts as a hazard, but they're worth a look.
+- `puzzles.json` is left uncommitted for review (CLAUDE.md: "I review the results before
+  committing"). The puzzle tests need it, so commit it after review.
+
+**Next.** UI: Play screen with tile tray, answer row (SortableJS), validation messages.

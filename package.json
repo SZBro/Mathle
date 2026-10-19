@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check-puzzles": "node tools/check-puzzles.js",
+    "solve": "node tools/solve.js"
   },
   "devDependencies": {
     "vite": "^8.3.4",
