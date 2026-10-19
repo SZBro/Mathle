@@ -25,11 +25,16 @@ rules.addEventListener('click', (e) => {
   if (e.target === rules) rules.close(); // click on the backdrop
 });
 
-const app = document.getElementById('app');
+let app = document.getElementById('app');
 const preview = byId !== undefined;
 if (params.has('reset')) clearDay(day);
 
 function showReveal(p, result) {
+  // A fresh <main>: Play's tap and key handlers live on the old one, and on Reveal
+  // they would still pull tiles out of the answer.
+  const fresh = app.cloneNode(false);
+  app.replaceWith(fresh);
+  app = fresh;
   renderReveal(app, { puzzle: p, result, notes: getNotes(day) });
   window.scrollTo(0, 0);
 }

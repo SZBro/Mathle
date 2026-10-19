@@ -315,3 +315,20 @@ valid submit), today's puzzle saved and reopened straight to Reveal on reload, a
 puzzle with a slot tile, and the beat-best log using a planted entry.
 
 **Next.** Possibly a share button or practice mode (both "Later" in CLAUDE.md).
+
+## 2026-10-18 — Step 10: Reveal tiles could be removed by clicking
+
+**Planned.** Fix a bug found while testing: on the Reveal screen, clicking the tiles of
+your answer removed them one at a time.
+
+**Changed.** `src/main.js`: Reveal now renders into a fresh `<main id="app">` that
+replaces the old one, instead of reusing it.
+
+**Broke.** The cause: Play attaches its tap and keyboard handlers to `#app`, and Reveal
+reused that element. A click on a Reveal tile still ran Play's "send this tile back to
+the tray" code, which moved the tile into the old tray, no longer on the page. Checked
+in the browser: clicking and pressing Enter on every Reveal tile now leaves them all in place.
+
+**Decided.** Swapping the element drops every Play handler in one go, without Play
+needing a teardown function. The document-level popover listeners stay, but they do
+nothing once Play is gone.
