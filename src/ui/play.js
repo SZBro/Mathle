@@ -8,7 +8,7 @@ import Sortable from 'sortablejs';
 import { check, tilesToString, FNS } from '../engine/index.js';
 import { createTile } from './tiles.js';
 
-const GOALS = {
+export const GOALS = {
   largest: () => 'Make the <strong>largest</strong> number you can',
   smallest: () => 'Make the <strong>smallest</strong> number you can <span class="goal-sub">(negatives allowed)</span>',
   smallestPositive: () => 'Make the <strong>smallest</strong> number that is still <strong>above 0</strong>',
@@ -200,6 +200,7 @@ export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit }
     const nextBad = new Set(shown.flatMap((e) => e.tileIds));
     for (const [id, el] of els) {
       el.classList.toggle('bad', nextBad.has(id));
+      el.classList.remove('bad-cause');
       if (nextBad.has(id) && !badIds.has(id)) {
         el.classList.remove('shake');
         void el.offsetWidth;
@@ -215,17 +216,42 @@ export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit }
       else if (unused) lines.push(['info', `${count(unused.tileIds.length)} left to place.`]);
       else if (ok) lines.push(['ok', 'Looks good. Ready when you are: you only get one shot.']);
     }
+    showStatus(lines);
+
+    const remaining = unused ? unused.tileIds.length : 0;
+    left.textContent = remaining ? `${count(remaining)} left` : 'all placed';
+    submit.disabled = !ok;
+    return { ok, arrangement };
+  }
+
+  function showStatus(lines) {
     status.replaceChildren(...lines.map(([kind, text]) => {
       const li = document.createElement('li');
       li.className = kind;
       li.textContent = text;
       return li;
     }));
+  }
 
-    const remaining = unused ? unused.tileIds.length : 0;
-    left.textContent = remaining ? `${count(remaining)} left` : 'all placed';
-    submit.disabled = !ok;
-    return { ok, arrangement };
+  // A math error from Submit. It shows where and why, but no values: the steps done
+  // before the error would give away part of the answer. Moving any tile clears it
+  // (update() redraws everything).
+  function showMathError(error) {
+    const ids = new Set(error.tileIds);
+    for (const [id, el] of els) el.classList.toggle('bad', ids.has(id));
+    const cause = els.get(error.tileId);
+    if (cause) {
+      cause.classList.add('bad-cause');
+      cause.classList.remove('shake');
+      void cause.offsetWidth;
+      cause.classList.add('shake');
+    }
+    badIds = ids;
+    showStatus([
+      ['error', error.message],
+      ['info', 'Your shot isn\'t used up. Rearrange the tiles and submit again.'],
+    ]);
+    submit.disabled = true; // the same arrangement would fail the same way
   }
 
   // --- Function help popover -----------------------------------------------------
@@ -285,7 +311,8 @@ export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit }
   submit.addEventListener('click', () => {
     const { ok, arrangement } = update();
     if (!ok) return;
-    onSubmit({ arrangement, expr: tilesToString(arrangement) });
+    const res = onSubmit({ arrangement, expr: tilesToString(arrangement) });
+    if (res?.error) showMathError(res.error);
   });
 
   update();

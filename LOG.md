@@ -259,3 +259,59 @@ on the grey tile.
 
 **Decided.** Green is now the only accent colour. Yellow is free for later, e.g. a
 "close to best" score on the Reveal screen.
+
+## 2026-10-18 — Step 9: Reveal screen
+
+**Planned.** Submit evaluates with the engine. A math error stays on Play, marks where
+it happened and doesn't use up the shot. Success saves the day to `mathle:v1` and shows
+Reveal: the expression, result, score bar, steps, best answer, hint and a countdown.
+A day already played opens straight to Reveal. I described the plan first and got an OK.
+
+**Changed.**
+- `src/result.js` (no DOM): `submit(puzzle, arrangement)` runs, scores and builds the
+  saved entry `{ puzzleId, expr, value, score }`. `replay(puzzle, entry)` rebuilds the
+  Reveal data from a saved entry by running its `expr` again.
+- `src/storage.js`: `getDay`, `saveDay`, `clearDay`.
+- `src/daily.js`: `msUntilNextDay` (to local midnight, built from calendar fields so DST
+  days are right) and `formatCountdown` (`hh:mm:ss`).
+- `src/ui/play.js`: on a math error, the sub-expression is outlined red, the tile that
+  caused it is solid red and shakes, and the status says why and that the shot isn't
+  used up. Submit stays disabled until a tile moves; any move clears the error.
+  `GOALS` is exported so Reveal uses the same goal wording.
+- `src/ui/reveal.js`: answer card (your expression as small static tiles, `= value`, the
+  goal, and "off by N" for closest goals), score % with a bar, numbered steps with the
+  rest of the expression under each, best answer ("best possible" if proven, else "best
+  known"), hint, live countdown, and the day's scratch notes read-only if any.
+- `src/main.js`: routes to Play or Reveal. New dev override `?reset` forgets the day.
+- `src/style.css`: Reveal styles, reusing the existing cards and labels. The score is
+  green at 100%, yellow at 60–99%, grey below that.
+- Tests: `tests/result.test.js` (submit, math error, unused tiles, and every puzzle's
+  best and naive answers saved then replayed to the same value) and countdown tests in
+  `tests/daily.test.js`. The suite now has 223 tests.
+
+**Broke.** A bash heredoc ate the backslash in `isn\'t`, so the Play screen didn't load;
+the Vite log showed it at once. In `replay`, a malformed saved expression like `((` still
+tokenizes, so tiles are now kept only when the expression runs.
+
+**Decided.**
+- A math error shows **no values and no partial steps**, even though the engine returns
+  the steps done before the error. They would give away part of the answer.
+- Only the four fields from CLAUDE.md are saved. Steps are rebuilt from `expr` on load,
+  since the engine is deterministic. The saved score is shown as it was, even if the
+  puzzle's best is improved later. If the saved `expr` no longer runs, Reveal still
+  shows the saved value, without steps.
+- `?puzzle=<id>` is preview mode: it plays and reveals but saves nothing, so puzzles can
+  be tested without locking a day. `?date=` saves and locks that date as usual.
+- The result uses `formatNumber`, as everywhere else: whole numbers plainly (`768`),
+  others to 2 decimals (`59.41`).
+- The "beat the best known answer" console log runs on every Reveal of that day (also
+  on reload), with the puzzle id, expression, value and previous best.
+- The countdown watches for the local date changing (at midnight `msUntilNextDay` is a
+  full day again), then swaps to a "Play the new puzzle" link.
+
+**Checked in the browser** at 360px and 375px, light and dark mode, with no sideways
+scrolling: a ÷0 on puzzle 4 (marked, nothing saved, cleared by moving a tile, then a
+valid submit), today's puzzle saved and reopened straight to Reveal on reload, a closest
+puzzle with a slot tile, and the beat-best log using a planted entry.
+
+**Next.** Possibly a share button or practice mode (both "Later" in CLAUDE.md).

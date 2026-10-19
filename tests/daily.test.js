@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   LAUNCH_DATE, dateKey, isDateKey, daysSinceLaunch, puzzleIndex, hashString, shuffle,
+  msUntilNextDay, formatCountdown,
 } from '../src/daily.js';
 
 describe('dates', () => {
@@ -47,5 +48,29 @@ describe('shuffle', () => {
     const copy = [...items];
     shuffle(items, 7);
     expect(items).toEqual(copy);
+  });
+});
+
+describe('countdown', () => {
+  it('counts down to the next local midnight', () => {
+    expect(msUntilNextDay(new Date(2026, 9, 18, 23, 59, 0))).toBe(60000);
+    expect(msUntilNextDay(new Date(2026, 9, 18, 0, 0, 0))).toBe(86400000);
+  });
+
+  it('lands on midnight of the next day every day of a year (covers DST here)', () => {
+    for (let i = 0; i < 366; i++) {
+      const now = new Date(2026, 0, 1 + i, 12, 30);
+      const next = new Date(now.getTime() + msUntilNextDay(now));
+      expect([next.getHours(), next.getMinutes(), next.getSeconds()]).toEqual([0, 0, 0]);
+      expect(next.getDate()).toBe(new Date(2026, 0, 2 + i).getDate());
+    }
+  });
+
+  it('formats as hh:mm:ss', () => {
+    expect(formatCountdown(0)).toBe('00:00:00');
+    expect(formatCountdown(-5)).toBe('00:00:00');
+    expect(formatCountdown(1)).toBe('00:00:01');
+    expect(formatCountdown(86400000)).toBe('24:00:00');
+    expect(formatCountdown((3 * 3600 + 7 * 60 + 9) * 1000)).toBe('03:07:09');
   });
 });

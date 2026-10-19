@@ -38,3 +38,21 @@ export function setNotes(day, text) {
   else delete data.notes[day];
   save(data);
 }
+
+// A finished day: { puzzleId, expr, value, score }. Its presence locks the day.
+export function getDay(day) {
+  const entry = load().days[day];
+  return entry && typeof entry.expr === 'string' ? entry : null;
+}
+
+export function saveDay(day, entry) {
+  const data = load();
+  data.days[day] = entry;
+  save(data);
+}
+
+export function clearDay(day) {
+  const data = load();
+  delete data.days[day];
+  save(data);
+}

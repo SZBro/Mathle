@@ -66,3 +66,17 @@ export function shuffle(items, seed) {
   }
   return out;
 }
+
+// Milliseconds until the next local midnight, when the next puzzle unlocks.
+// Built from calendar fields so a DST day (23 or 25 hours) is still right.
+export function msUntilNextDay(now = new Date()) {
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  return next - now;
+}
+
+// "hh:mm:ss" for a countdown; never negative.
+export function formatCountdown(ms) {
+  const total = Math.max(0, Math.ceil(ms / 1000));
+  const parts = [Math.floor(total / 3600), Math.floor(total / 60) % 60, total % 60];
+  return parts.map((n) => String(n).padStart(2, '0')).join(':');
+}
