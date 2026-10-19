@@ -222,3 +222,27 @@ page: reordering, pulling a number out of a slot, and a slot refusing an operato
 
 **Next.** Reveal screen: evaluate on submit (math errors don't use up the shot), show
 the steps, best answer, score and countdown, and lock the day.
+
+## 2026-10-18 — Step 7: Wordle-style restyle
+
+**Planned.** The indigo "paper" palette felt heavy. Restyle to something closer to
+Wordle: lighter, simpler and more playful. CSS and header markup only; no behaviour changes.
+
+**Changed.**
+- `src/style.css`: white page; flat tiles with 4px corners in bold Helvetica (no
+  monospace, no drop shadows).
+  - Numbers are white with a grey border (like a filled Wordle square).
+  - Operators are light-grey "keyboard keys"; parentheses are a paler grey.
+  - Functions are Wordle yellow with white text.
+  - Green is the main accent: the Submit button, the target number and "ready" messages.
+  - Difficulty chips are green, yellow or grey for easy, medium or hard.
+  - Section labels are small uppercase grey text with letter spacing.
+  - The shake is Wordle-style; tapping a tile gives a small pop.
+  - Dark mode uses Wordle's dark palette (#121213, #3a3a3c, #538d4e, #b59f3b).
+- `index.html`: the header is now a full-width bar with a hairline under it. The title
+  is centred, puzzle # and date sit on the left, and `?` is on the right.
+
+**Broke.** Nothing. Checked at phone width in light and dark mode.
+
+**Decided.** Error red stays (Wordle has no red), but softer. Disabled Submit is a grey
+key rather than a faded green.
