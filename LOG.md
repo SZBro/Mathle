@@ -332,3 +332,29 @@ in the browser: clicking and pressing Enter on every Reveal tile now leaves them
 **Decided.** Swapping the element drops every Play handler in one go, without Play
 needing a teardown function. The document-level popover listeners stay, but they do
 nothing once Play is gone.
+
+## 2026-10-18 — Step 11: GitHub Pages deployment
+
+**Planned.** Deploy to GitHub Pages: set Vite's `base` to the repo name, and add a
+GitHub Actions workflow that tests, builds and deploys `dist/` on every push to `main`.
+Make sure the puzzles are in the build.
+
+**Changed.**
+- `vite.config.js`: `base: '/Mathle/'` (the repo is `SZBro/Mathle`, so the site lives at
+  https://szbro.github.io/Mathle/). The dev server now serves from `/Mathle/` too.
+- `.github/workflows/deploy.yml`: on push to `main` (or a manual run), it runs `npm ci`,
+  `npm test`, `npm run check-puzzles` and `npm run build` on Node 22, uploads `dist/`
+  and deploys it with `actions/deploy-pages`. A failing test or puzzle check stops the
+  deploy. Only one deploy runs at a time.
+- `.claude/launch.json`: a `mathle-build-preview` entry (`vite preview` on port 4173)
+  for checking the production build locally.
+
+**Broke.** Nothing. The built `index.html` points at `/Mathle/assets/…`, and
+`vite preview` at `/Mathle/` loads today's puzzle with no console errors.
+
+**Decided.**
+- `puzzles.json` doesn't need copying: `main.js` imports it, so Vite bundles it into
+  the JS. I checked that the hints of all 30 puzzles are in the built bundle.
+- The puzzle checker runs in CI as well as the tests, so a bad puzzle edit can't go live.
+- The repo's Pages source has to be "GitHub Actions" (Settings → Pages); the workflow
+  can't switch it on with its own token.
