@@ -246,3 +246,16 @@ Wordle: lighter, simpler and more playful. CSS and header markup only; no behavi
 
 **Decided.** Error red stays (Wordle has no red), but softer. Disabled Submit is a grey
 key rather than a faded green.
+
+## 2026-10-18 — Step 8: plain function tiles
+
+**Planned.** Drop the yellow on function tiles; the `?` badge already marks them.
+
+**Changed.** `src/style.css`: function and slot tiles use the same grey "key" style as
+operators. The empty slot is a dashed square on the page background so it stays visible
+on the grey tile.
+
+**Broke.** Nothing.
+
+**Decided.** Green is now the only accent colour. Yellow is free for later, e.g. a
+"close to best" score on the Reveal screen.

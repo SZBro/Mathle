@@ -21,8 +21,8 @@
   --op-ink: #1a1a1b;
   --paren-bg: #edeff1;
   --paren-ink: #1a1a1b;
-  --fn-bg: var(--yellow);
-  --fn-ink: #ffffff;
+  --fn-bg: var(--op-bg);
+  --fn-ink: var(--op-ink);
 
   --font: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
   color-scheme: light dark;
@@ -279,7 +279,8 @@ body {
   justify-content: center;
   min-width: 38px;
   height: 36px;
-  border: 2px dashed rgba(255, 255, 255, 0.7);
+  border: 2px dashed var(--border-strong);
+  background: var(--bg);
   border-radius: 4px;
 }
 .slot-zone .tile {
