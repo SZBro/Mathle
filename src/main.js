@@ -5,6 +5,9 @@ import { getNotes, setNotes, getDay, saveDay, clearDay } from './storage.js';
 import { submit, replay } from './result.js';
 import { renderPlay } from './ui/play.js';
 import { renderReveal } from './ui/reveal.js';
+import { initAnalytics, track } from './analytics.js';
+
+initAnalytics();
 
 // Dev overrides: ?date=2026-11-02 plays that day; ?puzzle=12 plays puzzle id 12 without
 // saving or locking anything; ?reset forgets the day's result so it can be played again.
@@ -20,7 +23,10 @@ document.getElementById('puzzle-date').textContent =
   new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
 const rules = document.getElementById('rules');
-document.getElementById('rules-open').addEventListener('click', () => rules.showModal());
+document.getElementById('rules-open').addEventListener('click', () => {
+  rules.showModal();
+  track('rules-opened');
+});
 rules.addEventListener('click', (e) => {
   if (e.target === rules) rules.close(); // click on the backdrop
 });
@@ -53,7 +59,10 @@ if (saved) {
     onSubmit: ({ arrangement }) => {
       const res = submit(puzzle, arrangement);
       if (!res.ok) return res; // a math error: Play shows it, the shot isn't used
-      if (!preview) saveDay(day, res.entry);
+      if (!preview) {
+        saveDay(day, res.entry);
+        track('played');
+      }
       showReveal(puzzle, res.result);
       return res;
     },

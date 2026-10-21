@@ -358,3 +358,23 @@ Make sure the puzzles are in the build.
 - The puzzle checker runs in CI as well as the tests, so a bad puzzle edit can't go live.
 - The repo's Pages source has to be "GitHub Actions" (Settings → Pages); the workflow
   can't switch it on with its own token.
+
+## 2026-10-20 — Step 12: Visitor counting with GoatCounter
+
+**Planned.** Count visitors without anything heavy: no cookies, no consent banner, no
+npm dependency. Also count how many people actually play, not just open the page.
+
+**Changed.**
+- `src/analytics.js`: `initAnalytics()` adds GoatCounter's `count.js` for the site
+  `szbro` (dashboard at https://szbro.goatcounter.com), and `track(name)` sends a named
+  event. Both do nothing if the code is empty or the script hasn't loaded.
+- `src/main.js`: page views are counted automatically; `played` is sent on a real
+  submit (not in `?puzzle=` preview mode), and `rules-opened` when "?" is opened.
+
+**Broke.** Nothing. Tests and build pass.
+
+**Decided.**
+- GoatCounter over Google Analytics: free, cookie-free, one script tag.
+- The script is injected from JS rather than written in `index.html`, so the site code
+  and the events live in one file.
+- GoatCounter skips localhost by itself, so dev runs aren't counted.
