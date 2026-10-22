@@ -1,5 +1,6 @@
 // The Reveal screen: the player's answer and result, the score bar, the steps, the
-// best known answer, the hint and a countdown to the next puzzle.
+// best known answer, the hint and a countdown to the next puzzle (or, in practice
+// mode, buttons for another practice puzzle and back to today's).
 //
 // `result` comes from submit() or replay() in result.js:
 //   { expr, tiles, value, steps, score, percent, beatBest, matchedBest }
@@ -9,7 +10,7 @@ import { msUntilNextDay, formatCountdown } from '../daily.js';
 import { createTile } from './tiles.js';
 import { GOALS } from './play.js';
 
-export function renderReveal(main, { puzzle, result, notes }) {
+export function renderReveal(main, { puzzle, result, notes, practice = false }) {
   const { goal } = puzzle;
   const tier = result.percent === 100 ? 'top' : result.percent >= 60 ? 'mid' : 'low';
 
@@ -51,10 +52,16 @@ export function renderReveal(main, { puzzle, result, notes }) {
       <p id="hint"></p>
     </section>
 
+    ${practice ? `
+    <section class="practice-actions">
+      <a class="submit" href="${location.pathname}?practice">New practice puzzle</a>
+      <a class="secondary" href="${location.pathname}">Back to today's puzzle</a>
+    </section>` : `
     <section class="countdown">
       <span class="label">Next puzzle in</span>
       <p class="clock" id="clock"></p>
-    </section>
+      <a class="secondary" href="${location.pathname}?practice">Practice while you wait</a>
+    </section>`}
 
     ${notes ? `<details class="notes"><summary>Your scratch work</summary><pre class="notes-text" id="notes"></pre></details>` : ''}
   `;
@@ -119,6 +126,8 @@ export function renderReveal(main, { puzzle, result, notes }) {
   $('#hint').textContent = puzzle.hint ?? '';
   if (!puzzle.hint) $('.hint').remove();
   if (notes) $('#notes').textContent = notes;
+
+  if (practice) return;
 
   // Countdown to local midnight. Recomputed each tick, so a sleeping laptop catches up.
   const clock = $('#clock');

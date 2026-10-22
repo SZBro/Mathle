@@ -142,6 +142,12 @@ the puzzle.
    - the puzzle's hint
    - a countdown to the next puzzle
 3. If today is already played, open straight to Reveal.
+4. **Practice** (`?practice=N`): the same Play and Reveal screens with a generated puzzle
+   seeded `"practice-v<GENERATOR_VERSION>:N"`. A bare `?practice` picks N from the clock
+   and rewrites the URL, so a reload or shared link gives the same puzzle. Nothing is
+   saved (not the result, not the notes) and nothing locks. Reveal shows "New practice
+   puzzle" and "Back to today's puzzle" instead of the countdown; the daily Reveal links
+   to practice under its countdown.
 
 ## Storage
 localStorage key `mathle:v1`:
@@ -150,8 +156,7 @@ localStorage key `mathle:v1`:
 before generation have no copy and use the hand-made puzzle with `puzzleId`.
 
 ## Later (not v1)
-Three rounds per day; a practice mode (random small puzzles using the live solver, not
-saved); a share button; user accounts and cross-device storage; more functions; optional
+Three rounds per day; a share button; user accounts and cross-device storage; more functions; optional
 or wildcard tiles.
 
 ## Workflow

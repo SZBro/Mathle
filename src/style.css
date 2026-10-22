@@ -573,6 +573,31 @@ dialog code { font-family: inherit; font-weight: 700; }
   text-decoration: none;
   letter-spacing: 0.06em;
 }
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  margin-top: 12px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font: 700 14px/1 var(--font);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+.secondary:hover { border-color: var(--border-strong); }
+.countdown .secondary { margin-top: 18px; }
+.practice-actions { margin-top: 26px; }
+.practice-actions .submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  text-decoration: none;
+}
+
 .notes-text {
   margin: 0 14px 12px;
   font: 15px/1.5 var(--font);

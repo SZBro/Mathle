@@ -480,3 +480,44 @@ puzzle 2, no copy) still opened its Reveal, hint included. No console errors.
   That's harmless, because new entries always carry their own puzzle; the id only
   matters for old entries.
 - Practice mode (a time-based seed, not saved) is the next step.
+
+## 2026-10-21 — Step 17: Practice mode
+
+**Planned.** Unlimited practice puzzles from the same generator, seeded from the clock
+and never saved, reachable from the daily Reveal screen.
+
+**Changed.**
+- `src/generate.js`:
+  - `practicePuzzle(n)` uses its own seed space, `"practice-v1:N"`, so it never repeats
+    a daily.
+  - `newPracticeNumber()` turns the clock into 1–999,999.
+  - `parsePracticeNumber(s)` accepts only valid URL values.
+- `src/main.js`:
+  - `?practice=N` plays practice puzzle N. A bare `?practice` picks a new N and rewrites
+    the URL with `history.replaceState`, so reloading or sharing gives the same puzzle.
+  - Practice never saves a result or notes, and never locks; notes last only as long
+    as the page.
+  - The header shows "Practice / #N". GoatCounter gets a `practice-played` event.
+- `src/ui/play.js`: "Practice goal", "Practice scores aren't saved.", and a notes
+  placeholder of "Not saved."
+- `src/ui/reveal.js`, `src/style.css`:
+  - Practice Reveal has "New practice puzzle" and "Back to today's puzzle" instead of
+    the countdown.
+  - The daily Reveal has a "Practice while you wait" link under the countdown.
+- `tests/generate.test.js`: practice puzzles are repeatable, pass the checker and don't
+  overlap the dailies; plus tests for the clock number and URL parsing.
+- `CLAUDE.md`: Practice added under Screens and removed from "Later".
+
+**Broke.** The build failed on `'Today's goal'` inside a template expression: my
+scripted edit dropped the escaping on the apostrophe. Switched those strings to double
+quotes. The tests didn't catch it because nothing imports `play.js`; the build did.
+
+**Decided.**
+- The practice number lives in the URL rather than storage, which makes practice
+  shareable later for free.
+- Checked in the browser:
+  - The daily Reveal link opened `?practice=521673`. The header showed "Practice
+    #521673".
+  - Submitting `12 + 8 − (9 + 10)` scored 100%, and no day was added to storage.
+  - Both Reveal buttons point to the right URLs. At 375px wide there is no sideways
+    scrolling.

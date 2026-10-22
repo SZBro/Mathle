@@ -54,6 +54,27 @@ export function dailyPuzzle(day, number) {
   return p && { ...p, id: number, seed };
 }
 
+// Practice puzzle N (1 to 999,999). Its own seed space, so it never repeats a daily.
+export function practicePuzzle(number) {
+  const seed = `practice-v${GENERATOR_VERSION}:${number}`;
+  const p = generatePuzzle(hashString(seed));
+  return p && { ...p, id: number, seed, practice: true };
+}
+
+export const MAX_PRACTICE = 999_999;
+
+// A practice number taken from the clock: a new one every millisecond, wrapping around.
+export function newPracticeNumber(now = Date.now()) {
+  return (now % MAX_PRACTICE) + 1;
+}
+
+// "?practice=123" -> 123; anything else -> null.
+export function parsePracticeNumber(s) {
+  if (typeof s !== 'string' || !/^\d{1,6}$/.test(s)) return null;
+  const n = Number(s);
+  return n >= 1 && n <= MAX_PRACTICE ? n : null;
+}
+
 // Returns a puzzle, or null if no candidate passed the filters (very unlikely).
 export function generatePuzzle(seed, { attempts = 200 } = {}) {
   const rand = mulberry32(seed);

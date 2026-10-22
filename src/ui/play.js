@@ -20,15 +20,15 @@ export const GOALS = {
 const TRAILING = new Set(['operatorAtEnd', 'unclosedParen']);
 const TRAILING_AT_LAST = new Set(['fnMissingOperand', 'slotContents']);
 
-export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit }) {
+export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit, practice = false }) {
   main.innerHTML = `
     <section class="card goal">
       <div class="goal-top">
-        <span class="label">Today's goal</span>
+        <span class="label">${practice ? 'Practice goal' : "Today's goal"}</span>
         <span class="chip chip-${puzzle.difficulty}">${puzzle.difficulty}</span>
       </div>
       <p class="goal-text">${GOALS[puzzle.goal.type](puzzle.goal)}</p>
-      <p class="goal-rule">Use every tile once. You get one submit.</p>
+      <p class="goal-rule">Use every tile once. You get one submit.${practice ? " Practice scores aren't saved." : ''}</p>
     </section>
 
     <section class="block">
@@ -50,7 +50,7 @@ export function renderPlay(main, { puzzle, trayOrder, notes, onNotes, onSubmit }
 
     <details class="notes" ${notes ? 'open' : ''}>
       <summary>Scratch work</summary>
-      <textarea id="notes" rows="4" placeholder="Work it out here. Saved for today only."></textarea>
+      <textarea id="notes" rows="4" placeholder="Work it out here. ${practice ? 'Not saved.' : 'Saved for today only.'}"></textarea>
     </details>
 
     <button type="button" class="submit" id="submit" disabled>Submit</button>

@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { runString, tilesFromString } from '../src/engine/index.js';
 import { quality, score } from '../src/engine/score.js';
-import { dailyPuzzle, dealTiles, generatePuzzle, judge } from '../src/generate.js';
+import {
+  dailyPuzzle, dealTiles, generatePuzzle, judge,
+  newPracticeNumber, parsePracticeNumber, practicePuzzle, MAX_PRACTICE,
+} from '../src/generate.js';
 import { mulberry32 } from '../src/daily.js';
 import { checkPuzzle } from '../tools/check.js';
 import { solve } from '../tools/solver.js';
@@ -116,6 +119,43 @@ describe('judge (quality filters)', () => {
     for (const p of closest) {
       expect(Number.isInteger(p.goal.target)).toBe(true);
       expect(p.goal.target).toBeGreaterThanOrEqual(10);
+    }
+  });
+});
+
+describe('practice puzzles', () => {
+  it('gives the same puzzle for the same number', () => {
+    expect(practicePuzzle(4321)).toEqual(practicePuzzle(4321));
+    expect(practicePuzzle(4321)).toMatchObject({ id: 4321, seed: 'practice-v1:4321', practice: true });
+  });
+
+  it('generates for many numbers and passes the checker', () => {
+    for (let n = 1; n <= 40; n++) {
+      const p = practicePuzzle(n * 24_989);
+      expect(checkPuzzle(p).errors).toEqual([]);
+    }
+  });
+
+  it('uses its own seeds, not the daily ones', () => {
+    const daily = new Set(puzzles.map((p) => JSON.stringify(p.tiles)));
+    const practice = Array.from({ length: 30 }, (_, i) => JSON.stringify(practicePuzzle(i + 1).tiles));
+    expect(practice.filter((t) => daily.has(t)).length).toBeLessThan(3);
+  });
+
+  it('takes a number from the clock, always in range', () => {
+    expect(newPracticeNumber(0)).toBe(1);
+    expect(newPracticeNumber(MAX_PRACTICE - 1)).toBe(MAX_PRACTICE);
+    expect(newPracticeNumber(MAX_PRACTICE)).toBe(1);
+    const n = newPracticeNumber();
+    expect(n).toBeGreaterThanOrEqual(1);
+    expect(n).toBeLessThanOrEqual(MAX_PRACTICE);
+  });
+
+  it('reads only valid numbers from the URL', () => {
+    expect(parsePracticeNumber('123')).toBe(123);
+    expect(parsePracticeNumber('999999')).toBe(999_999);
+    for (const bad of [null, '', '0', '-5', '1.5', '1e3', 'abc', '1000000']) {
+      expect(parsePracticeNumber(bad), String(bad)).toBeNull();
     }
   });
 });
