@@ -378,3 +378,17 @@ npm dependency. Also count how many people actually play, not just open the page
 - The script is injected from JS rather than written in `index.html`, so the site code
   and the events live in one file.
 - GoatCounter skips localhost by itself, so dev runs aren't counted.
+
+## 2026-10-21 — Step 13: Tests for powers of a group
+
+**Planned.** Check whether `^` followed by `( … )` raises to the whole group, before
+building the puzzle generator on top of the grammar.
+
+**Changed.** `tests/evaluate.test.js`: six new cases, such as `2 ^ (3 + 1)` = 16,
+`3 × 2 ^ (1 + 2)` = 24, `2 ^ (1 + 1) ^ 2` = 16 and `2 ^ √(9 + 7)` = 16.
+
+**Broke.** Nothing. They all passed with no code change: in the grammar a `( … )` group
+is an ordinary operand of `^`.
+
+**Decided.** The grammar stays as it is. No implicit multiplication: `8(3 + 1)` is
+still the "missing operator" error. The generator is built on these rules.
