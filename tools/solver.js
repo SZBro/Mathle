@@ -1,15 +1,15 @@
 // Offline solver. Uses the game's own tokenizer, validator, parser and evaluator, so it
 // can never disagree with the game.
 //
-// Arrangements are handled in "flat" form: the puzzle's tiles in order, where a slot
-// tile is always followed by the number it holds (see toArrangement).
+// Arrangements are handled in "flat" form (see src/engine/enumerate.js).
 //
 //   exhaustive  every well-formed arrangement, identical tiles not repeated; proven best
 //   heuristic   random restarts + local moves (swap, move, move a block); "best known"
 
-import { evaluate, parse, tilesToString, tokenize, validate } from '../src/engine/index.js';
+import { tilesToString } from '../src/engine/index.js';
+import { tileKey, toArrangement, valueOf, walk } from '../src/engine/enumerate.js';
 import { quality } from '../src/engine/score.js';
-import { puzzleTilesWithIds, tileKey, toArrangement } from './puzzles.js';
+import { puzzleTilesWithIds } from './puzzles.js';
 
 export const DEFAULT_EXHAUSTIVE_MAX = 13;
 
@@ -51,77 +51,7 @@ export function randomNaive(puzzle, { samples = 501, seed = 1 } = {}) {
   return { expr: tilesToString(toArrangement(mid.flat)), value: mid.value };
 }
 
-// Evaluates a flat arrangement. Returns null for malformed input or a math error.
-// `trusted` skips validation for arrangements built by the grammar walk below.
-export function valueOf(flat, trusted = false) {
-  const tokens = tokenize(toArrangement(flat));
-  if (!trusted && validate(tokens).length) return null;
-  const r = evaluate(parse(tokens), { steps: false });
-  return r.ok ? r.value : null;
-}
-
-// ---- grammar walk -------------------------------------------------------------------
-// What the last placed tile allows next, mirroring validate.js.
-const START = 0, OPERAND = 1, OP = 2, OPEN = 3, FN = 4, SLOT = 5;
-
-function step(state, kind) {
-  const { prev, depth } = state;
-  if (prev === SLOT) return kind === 'num' ? { prev: OPERAND, depth } : null;
-  if (prev === OPERAND) {
-    if (kind === 'op') return { prev: OP, depth };
-    if (kind === 'rparen' && depth > 0) return { prev: OPERAND, depth: depth - 1 };
-    return null;
-  }
-  // START, OP, OPEN, FN: an operand must come next
-  if (kind === 'num') return { prev: OPERAND, depth };
-  if (kind === 'lparen') return { prev: OPEN, depth: depth + 1 };
-  if (kind === 'fn') return { prev: FN, depth };
-  if (kind === 'fnslot') return { prev: SLOT, depth };
-  return null;
-}
-
-// Groups identical tiles so the walk never tries two orders of the same tiles.
-function makePools(tiles) {
-  const pools = new Map();
-  for (const t of tiles) {
-    const key = tileKey(t);
-    if (!pools.has(key)) pools.set(key, []);
-    pools.get(key).push(t);
-  }
-  return [...pools.values()];
-}
-
-// Depth-first walk over well-formed arrangements. `order(pools)` picks the order to try
-// tile groups in; `visit(flat)` returns true to stop the walk.
-function walk(tiles, order, visit) {
-  const pools = makePools(tiles);
-  const n = tiles.length;
-  const seq = [];
-  const left = { num: 0, fn: 0, lparen: 0 };
-  for (const t of tiles) if (t.kind in left) left[t.kind]++;
-
-  function go(state) {
-    if (seq.length === n) return state.depth === 0 && state.prev === OPERAND ? visit(seq) : false;
-    // Every remaining fn and "(" needs a number somewhere after it.
-    if (state.prev === OPERAND && left.num === 0 && (left.fn || left.lparen)) return false;
-    for (const pool of order(pools)) {
-      if (!pool.length) continue;
-      const kind = pool[pool.length - 1].kind;
-      const next = step(state, kind);
-      if (!next) continue;
-      const tile = pool.pop();
-      seq.push(tile);
-      if (kind in left) left[kind]--;
-      const stop = go(next);
-      if (kind in left) left[kind]++;
-      seq.pop();
-      pool.push(tile);
-      if (stop) return true;
-    }
-    return false;
-  }
-  go({ prev: START, depth: 0 });
-}
+// ---- exhaustive search --------------------------------------------------------------
 
 function exhaustive(tiles, q) {
   let best = { flat: null, value: null, q: -Infinity, proven: true, evaluated: 0 };

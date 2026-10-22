@@ -392,3 +392,24 @@ is an ordinary operand of `^`.
 
 **Decided.** The grammar stays as it is. No implicit multiplication: `8(3 + 1)` is
 still the "missing operator" error. The generator is built on these rules.
+
+## 2026-10-21 — Step 14: Shared enumerator in the engine
+
+**Planned.** The browser needs to list every answer to a small puzzle (to build daily
+puzzles). The offline solver already had that walk, so move it into the shared engine
+rather than writing a second one.
+
+**Changed.**
+- `src/engine/enumerate.js` (new): `tileKey`, `toArrangement`, `valueOf`, the grammar
+  `walk`, and `allAnswers(tiles)` → `{ answers: [{ flat, value }], total, errors }`.
+  It has no Node imports, so it runs in the browser.
+- `tools/solver.js` and `tools/puzzles.js` import these instead of keeping their own
+  copies. The solver's exhaustive and heuristic search are unchanged.
+- `tests/enumerate.test.js`: exact answer lists for small sets, duplicates listed once,
+  math errors counted but left out, and every answer checked against the game's `run`.
+
+**Broke.** Nothing. All the existing solver tests still pass.
+
+**Decided.** Timing in Node: an 8-tile set has about 300–600 arrangements (2–5 ms) and
+9 tiles about 1,500–2,900 (about 10 ms). That's cheap enough to generate and filter
+several candidates on page load, without a background worker.

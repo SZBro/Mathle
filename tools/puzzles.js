@@ -2,7 +2,6 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { canonicalFn, canonicalOp } from '../src/engine/tiles.js';
 
 export const PUZZLES_PATH = fileURLToPath(new URL('../src/puzzles.json', import.meta.url));
 
@@ -14,35 +13,12 @@ export function savePuzzles(puzzles, path = PUZZLES_PATH) {
   writeFileSync(path, formatPuzzles(puzzles));
 }
 
-// Identical tiles share a key: "num:7", "op:×", "lparen", "fn:√", "fnslot:log₂".
-export function tileKey(tile) {
-  switch (tile.kind) {
-    case 'num': return `num:${tile.value}`;
-    case 'op': return `op:${canonicalOp(tile.value)}`;
-    case 'fn':
-    case 'fnslot': return `${tile.kind}:${canonicalFn(tile.value)}`;
-    default: return tile.kind;
-  }
-}
+export { tileKey, toArrangement } from '../src/engine/enumerate.js';
 
 // An arrangement with slot contents pulled out, in reading order.
 export function flattenTiles(arrangement) {
   return arrangement.flatMap((t) =>
     t.kind === 'fnslot' ? [{ ...t, inner: undefined }, ...flattenTiles(t.inner ?? [])] : [t]);
-}
-
-// The solver's flat form: a slot tile is always followed by the number it holds.
-export function toArrangement(flat) {
-  const out = [];
-  for (let i = 0; i < flat.length; i++) {
-    const t = flat[i];
-    if (t.kind === 'fnslot') {
-      out.push({ ...t, inner: i + 1 < flat.length ? [flat[++i]] : [] });
-    } else {
-      out.push(t);
-    }
-  }
-  return out;
 }
 
 // Puzzle tiles with ids (their index), as the game will place them.
