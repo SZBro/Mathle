@@ -16,12 +16,18 @@ Course project: TCSS 490 Artifact 2. Keep `LOG.md` updated (see Workflow).
 - Never use `eval()` or `new Function()`. Write our own tokenizer and parser.
 
 ## Core rules
-- One puzzle per day, picked from `src/puzzles.json` (30 hand-made puzzles for now).
-  Day index = days since launch date (config constant) mod puzzle count.
+- One puzzle per day, **generated from the date** by `src/generate.js` (seed
+  `"v<GENERATOR_VERSION>:YYYY-MM-DD"`), so every player gets the same one with no server.
+  Daily puzzles have 8–9 tiles, so `best` is found by brute force and is exact.
+  Puzzle # = days since launch date (config constant) + 1.
+- The 30 hand-made puzzles in `src/puzzles.json` are the fallback if generation fails,
+  and can be previewed with `?puzzle=N`.
+- Any change to the generator changes which puzzle a date gives: bump
+  `GENERATOR_VERSION` when changing it.
 - **Every tile must be used** (v1).
 - **One shot.** No value is shown before submitting. After submitting, the day is
   locked (saved in localStorage).
-- Puzzles have 8 tiles (easy) up to 25 tiles max (hard).
+- Puzzles have 8 tiles (easy) up to 25 tiles max (hard). Generated dailies are 8–9.
 - Numbers range from 1 to 1000 and may be multi-digit. A number is a single tile.
 
 ## Tiles
@@ -75,7 +81,8 @@ Define quality `q(v)` per goal so that higher is better:
 - closest: `-|v - target|`
 
 `score = (q(player) - q(naive)) / (q(best) - q(naive))`, clamped to 0..1 and shown as a %.
-`best` and `naive` come from the puzzle file. If the player beats `best`, show 100% plus
+`best` and `naive` come from the puzzle (generated, or the puzzle file). For generated
+puzzles `naive` is the median of all valid answers, so a typical arrangement scores 0%. If the player beats `best`, show 100% plus
 a "you beat the best known answer!" message, and log it to the console so I can update
 the puzzle.
 
@@ -99,6 +106,13 @@ the puzzle.
 }
 ```
 `closest` goals also carry `"target": 247`. Tiles are shown to the player shuffled.
+
+## Generator (`src/generate.js`)
+- Deals a recipe (4 numbers + 3 operators + a function, slot or `( )`; or 3 numbers +
+  2 operators + `( )` + a function), lists every answer with the shared enumerator
+  (`src/engine/enumerate.js`), and applies quality filters: few math errors, enough
+  distinct results, a rare best that clearly beats the median, readable values.
+- Generated puzzles have no hint.
 
 ## Offline solver (`tools/solve.js`, Node)
 - Fills in `best` for each puzzle; I review the results before committing.
@@ -131,7 +145,9 @@ the puzzle.
 
 ## Storage
 localStorage key `mathle:v1`:
-`{ days: { "YYYY-MM-DD": { puzzleId, expr, value, score } }, notes: { "YYYY-MM-DD": "..." } }`
+`{ days: { "YYYY-MM-DD": { puzzleId, expr, value, score, puzzle } }, notes: { "YYYY-MM-DD": "..." } }`
+`puzzle` is a full copy of the puzzle played, so Reveal never regenerates it. Days saved
+before generation have no copy and use the hand-made puzzle with `puzzleId`.
 
 ## Later (not v1)
 Three rounds per day; a practice mode (random small puzzles using the live solver, not

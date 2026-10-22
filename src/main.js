@@ -2,21 +2,26 @@ import './style.css';
 import puzzles from './puzzles.json';
 import { dateKey, isDateKey, daysSinceLaunch, puzzleIndex, hashString, shuffle } from './daily.js';
 import { getNotes, setNotes, getDay, saveDay, clearDay } from './storage.js';
-import { submit, replay } from './result.js';
+import { submit, replay, savedPuzzle } from './result.js';
+import { dailyPuzzle } from './generate.js';
 import { renderPlay } from './ui/play.js';
 import { renderReveal } from './ui/reveal.js';
 import { initAnalytics, track } from './analytics.js';
 
 initAnalytics();
 
-// Dev overrides: ?date=2026-11-02 plays that day; ?puzzle=12 plays puzzle id 12 without
-// saving or locking anything; ?reset forgets the day's result so it can be played again.
+// Dev overrides: ?date=2026-11-02 plays that day; ?puzzle=12 plays hand-made puzzle 12
+// without saving or locking anything; ?reset forgets the day's result so it can be
+// played again.
 const params = new URLSearchParams(location.search);
 const day = isDateKey(params.get('date')) ? params.get('date') : dateKey();
-const byId = puzzles.find((p) => p.id === Number(params.get('puzzle')));
-const puzzle = byId ?? puzzles[puzzleIndex(day, puzzles.length)];
-
 const dayNumber = daysSinceLaunch(day) + 1;
+
+// Today's puzzle is generated from the date. The hand-made list is the fallback if the
+// generator ever comes up empty.
+const byId = puzzles.find((p) => p.id === Number(params.get('puzzle')));
+const puzzle = byId ?? dailyPuzzle(day, dayNumber) ?? puzzles[puzzleIndex(day, puzzles.length)];
+
 const [y, m, d] = day.split('-').map(Number);
 document.getElementById('puzzle-no').textContent = `#${dayNumber}`;
 document.getElementById('puzzle-date').textContent =
@@ -48,7 +53,7 @@ function showReveal(p, result) {
 // Already played today: straight to Reveal, with the puzzle that was actually played.
 const saved = preview ? null : getDay(day);
 if (saved) {
-  const played = puzzles.find((p) => p.id === saved.puzzleId) ?? puzzle;
+  const played = savedPuzzle(saved, puzzles) ?? puzzle;
   showReveal(played, replay(played, saved));
 } else {
   renderPlay(app, {

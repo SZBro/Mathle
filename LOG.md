@@ -452,3 +452,31 @@ replaced it with `40 30 20 ^ + ( ) log₂`, where 204 of 288 arrangements are to
 - Timing over 120 days: about 2 ms on average, 22 ms at worst; none needed a fallback.
 - Some largest/smallest days are easy, e.g. "subtract the biggest product". Fine for an
   "easy" daily; harder recipes can come with difficulty levels later.
+
+## 2026-10-21 — Step 16: Daily puzzle comes from the generator
+
+**Planned.** Use the generated puzzle for each day, keep Reveal working for days already
+played, and keep the hand-made puzzles around.
+
+**Changed.**
+- `src/main.js`: the day's puzzle is `dailyPuzzle(day, dayNumber)`, with the hand-made
+  list as the fallback. `?puzzle=N` still previews hand-made puzzle N.
+- `src/result.js`: a saved entry now holds a full copy of the puzzle. The new
+  `savedPuzzle(entry, handMade)` uses that copy, or the hand-made puzzle with the
+  entry's `puzzleId` for days saved before this change. A damaged copy is ignored.
+- `index.html`: the rules say "best possible answer" (generated bests are proven).
+- `CLAUDE.md`: daily generation, `GENERATOR_VERSION`, the generator section, the median
+  naive, and the `puzzle` field in storage.
+- `tests/result.test.js`: entries carry the puzzle; tests for `savedPuzzle`.
+
+**Broke.** Nothing. Checked in the browser for 2026-10-21: the page showed the same
+puzzle the Node script printed (closest to 61). Playing the best answer gave 100%,
+"Best possible answer", and no hint card. Reloading opened straight to Reveal, and the
+saved entry held the puzzle with seed `v1:2026-10-21`. An old-style entry (hand-made
+puzzle 2, no copy) still opened its Reveal, hint included. No console errors.
+
+**Decided.**
+- Generated puzzles use the day number as their id, which can match a hand-made id.
+  That's harmless, because new entries always carry their own puzzle; the id only
+  matters for old entries.
+- Practice mode (a time-based seed, not saved) is the next step.

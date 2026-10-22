@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import puzzles from '../src/puzzles.json';
-import { submit, replay } from '../src/result.js';
+import { submit, replay, savedPuzzle } from '../src/result.js';
+import { dailyPuzzle } from '../src/generate.js';
 import { tilesFromString } from '../src/engine/index.js';
 
 // Maps tilesFromString's ids onto the puzzle's tile indexes, the way the Play screen
@@ -24,7 +25,7 @@ describe('submit', () => {
   it('scores and builds a saved entry', () => {
     const res = submit(p1, arrange(p1, p1.best.expr));
     expect(res.ok).toBe(true);
-    expect(res.entry).toEqual({ puzzleId: 1, expr: p1.best.expr, value: p1.best.value, score: 1 });
+    expect(res.entry).toEqual({ puzzleId: 1, expr: p1.best.expr, value: p1.best.value, score: 1, puzzle: p1 });
     expect(res.result.percent).toBe(100);
     expect(res.result.steps.length).toBeGreaterThan(0);
   });
@@ -71,5 +72,23 @@ describe('replay', () => {
     expect(r.value).toBe(700);
     expect(r.steps).toEqual([]);
     expect(r.tiles).toEqual([]);
+  });
+});
+
+describe('savedPuzzle', () => {
+  const generated = dailyPuzzle('2026-10-21', 4);
+
+  it('uses the copy saved with the day', () => {
+    const { entry } = submit(generated, arrange(generated, generated.best.expr));
+    expect(savedPuzzle(JSON.parse(JSON.stringify(entry)), puzzles)).toEqual(generated);
+  });
+
+  it('falls back to the hand-made puzzle for days saved before generation', () => {
+    expect(savedPuzzle({ puzzleId: 1, expr: '1', value: 1, score: 0 }, puzzles)).toBe(p1);
+  });
+
+  it('ignores a damaged copy', () => {
+    expect(savedPuzzle({ puzzleId: 1, puzzle: { tiles: 'x' } }, puzzles)).toBe(p1);
+    expect(savedPuzzle({ puzzleId: 99, puzzle: null }, puzzles)).toBeNull();
   });
 });
