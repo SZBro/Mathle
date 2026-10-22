@@ -413,3 +413,42 @@ rather than writing a second one.
 **Decided.** Timing in Node: an 8-tile set has about 300–600 arrangements (2–5 ms) and
 9 tiles about 1,500–2,900 (about 10 ms). That's cheap enough to generate and filter
 several candidates on page load, without a background worker.
+
+## 2026-10-21 — Step 15: Seeded puzzle generator with quality filters
+
+**Planned.** Generate the daily puzzle from the date instead of picking it from the
+30 hand-made ones. It has to be the same for every player, exact (brute-forced), and
+not dull.
+
+**Changed.**
+- `src/generate.js` (new):
+  - `dailyPuzzle(day, number)` seeds `generatePuzzle` with a hash of `"v1:YYYY-MM-DD"`.
+  - `dealTiles` picks a recipe: 4 numbers + 3 operators + a function, a slot function
+    or a pair of parentheses; or 3 numbers + 2 operators + parentheses + a function.
+    That's 8 or 9 tiles. Numbers are distinct, mostly 1–12, sometimes 13–50. When a
+    function is dealt, one number suits it (a perfect square for √, a power of 2 for
+    log₂). At most one `^`, and no operator more than twice.
+  - `judge` lists every answer and applies the filters. It rejects a candidate when:
+    over 30% of arrangements hit a math error; there are fewer than 12 different
+    results; more than 8% of answers reach the best; the best isn't better than the
+    median; best or naive is over 1,000,000; or a smallest-positive best is under
+    0.000001 (float noise).
+  - For `closest`, the target is a whole number near a result from the upper half of
+    the reachable values, with up to 6 targets tried per tile set.
+  - `best` is the exhaustive best (`proven: true`). `naive` is the median answer, so a
+    typical arrangement scores 0% and the best scores 100%.
+- `tests/generate.test.js`: the same day gives the same puzzle; 60 days all generate,
+  pass the puzzle checker, cover all four goals, agree with the offline solver, and
+  score best 100% / naive 0%. There are also tests for dealing and for each filter.
+
+**Broke.** My first "mostly math errors" test case wasn't actually error-heavy. I
+replaced it with `40 30 20 ^ + ( ) log₂`, where 204 of 288 arrangements are too big.
+
+**Decided.**
+- `GENERATOR_VERSION` is part of the seed. Any change to the generator must bump it,
+  because it changes which puzzle a date gives.
+- Floating-point results of `log₂`, `∛` and `^` can differ in the last digit between
+  browsers. Every filter compares with a tolerance, so that can't change the puzzle.
+- Timing over 120 days: about 2 ms on average, 22 ms at worst; none needed a fallback.
+- Some largest/smallest days are easy, e.g. "subtract the biggest product". Fine for an
+  "easy" daily; harder recipes can come with difficulty levels later.
